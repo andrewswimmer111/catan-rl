@@ -34,3 +34,34 @@ class Tile:
         center_x = sqrt(3) * (self.q + self.r/2)
         center_y = 3/2 * self.r
         return (center_x, center_y)
+    
+    def get_axial_coords(self):
+        return (self.q, self.r)
+    
+
+class TileCollection:
+    """
+    Represents a collection of tiles
+    """
+
+    def __init__(self):
+        self.collection: list[Tile] = []
+
+    def __iter__(self):
+        return iter(self.collection)
+    
+    def __getitem__(self, index):
+        return self.collection[index]
+    
+    def __len__(self):
+        return len(self.collection)
+    
+    def append(self, tile):
+        self.collection.append(tile)
+    
+    # Real methods
+    def get_by_axial_coords(self, q, r):
+        for tile in self.collection:
+            if tile.get_axial_coords() == (q, r):
+                return tile
+        # else throw exception
