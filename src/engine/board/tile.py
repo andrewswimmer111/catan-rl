@@ -9,20 +9,18 @@ class Tile:
         q (int): The q-axial-coordinate.
         r (int): The r-axial-coordinate.
         resource (Resource): The resource type.
-        vertices (List<Vertex>): The adjacent vertices
+        vertices (List<Vertex>): The adjacent vertices, in order by offset. vertices[0] = vertex 0 with offest north/ 
     """
     def __init__(self, q, r):
         self.q: int = q
         self.r: int = r
         self.resource: Resource = None
         self.number: int = None
-        self.vertices = []
+        self.vertices = [None] * 6
 
-    def add_vertex(self, vertex):
-        self.vertices.append(vertex)
-    
-    def set_vertices(self, vertices):
-        self.vertices = vertices
+    def assign_vertex(self, vertex_obj, offset):
+        # check offest. Throw error if not 1-6
+        self.vertices[offset] = vertex_obj
 
     def set_resource(self, resource):
         self.resource = resource
@@ -64,4 +62,4 @@ class TileCollection:
         for tile in self.collection:
             if tile.get_axial_coords() == (q, r):
                 return tile
-        # else throw exception
+        return None

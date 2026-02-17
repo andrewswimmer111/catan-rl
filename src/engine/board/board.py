@@ -1,5 +1,6 @@
-from tile import Tile
-from vertex import Vertex
+from tile import Tile, TileCollection
+from vertex import Vertex, VertexCollection
+from edge import Edge
 from math import sqrt
 
 class Board:
@@ -8,13 +9,14 @@ class Board:
     """
 
     def __init__(self):
-        self.tiles: list[Tile] = []
-        self.vertices: list[Vertex] = []
+        self.tiles: TileCollection = []
+        self.vertices: VertexCollection = VertexCollection()
         self.edges = []
 
     def create_regular_board(self):
-        self.tiles = self.createTiles()
-        self.vertices = self.createVertices()
+        self.tiles = self.create_tiles()
+        self.vertices = self.create_vertices()
+        self.edges = self.create_edges()
 
 
     def create_tiles(self, R=2):
@@ -26,10 +28,11 @@ class Board:
                 tiles.append(Tile(q, r))
         return tiles
     
+
     def create_vertices(self):
 
         # Holds vertex coodinates -> vertex object
-        created_vertices = {}
+        created_vertices: dict[tuple[int, int], Vertex] = {}
 
         HALF = 1 / 2
         SQRT3_OVER_2 = sqrt(3) / 2
@@ -47,10 +50,47 @@ class Board:
         for tile in self.tiles:
             for i in offsets:
                 vertex_coord = tile.getCartesianCoords() + corner_offset[i]
+                vertex_id = (tile.get_axial_coords() + (i,))    # Example id for tile (0, 0) wilth offset S: (0, 0, 3)x
 
                 if vertex_coord in created_vertices:
-                    tile.addVertex(created_vertices[vertex_coord])
+                    vertex = created_vertices[vertex_coord]
                 else:
                     vertex = Vertex(vertex_coord[0], vertex_coord[1])
-                    tile.addVertex(vertex)
                     created_vertices[vertex_coord] = vertex
+
+                tile.assign_vertex(vertex, i)
+                vertex.add_id(vertex_id)
+
+
+    def create_edges(self):
+        for tile in self.tiles:
+            q, r = tile.get_axial_coords()
+            if r <= 0:
+                vertex = tile.vertices[0]
+
+                self.edges.append(Edge(vertex, tile.vertices[1]))
+                self.edges.append(Edge(vertex, tile.vertices[5]))
+                
+                if r >= -1:
+                    tile_above = TileCollection.get_by_axial_coords(q, r - 1)
+
+                    if tile_above is not None:
+                        self.edges.append(Edge(vertex, tile_above.vertices[1]))
+
+            if r == 0 and q % 2 == 0:
+
+                self.edges.append(Edge(tile.vertices[1], tile.vertices[2]))
+                self.edges.append(Edge(tile.vertices[5], tile.vertices[4]))
+
+            if r >= 0:
+                vertex = tile.vertices[3]
+
+                self.edges.append(Edge(vertex, tile.vertices[2]))
+                self.edges.append(Edge(vertex, tile.vertices[4]))
+
+                if r <= 1:
+                    tile_below = TileCollection.get_by_axial_coords(q, r + 1)
+                    if tile_below is not None:
+                        self.edges.append(Edge(vertex, tile_below.vertices[4]))
+
+            
