@@ -12,12 +12,12 @@ class Board:
         self.vertices: list[Vertex] = []
         self.edges = []
 
-    def createRegularBoard(self):
+    def create_regular_board(self):
         self.tiles = self.createTiles()
         self.vertices = self.createVertices()
 
 
-    def createTiles(self, R=2):
+    def create_tiles(self, R=2):
         tiles = []
         for q in range(-R, R + 1):
             r_min = max(-R, -q - R)
@@ -26,7 +26,7 @@ class Board:
                 tiles.append(Tile(q, r))
         return tiles
     
-    def createVertices(self):
+    def create_vertices(self):
 
         # Holds vertex coodinates -> vertex object
         created_vertices = {}

@@ -1,4 +1,5 @@
 from engine.resources.resources import Resource
+from math import sqrt
 
 class Tile:
     """
@@ -17,19 +18,19 @@ class Tile:
         self.number: int = None
         self.vertices = []
 
-    def addVertex(self, vertex):
+    def add_vertex(self, vertex):
         self.vertices.append(vertex)
     
-    def setVertices(self, vertices):
+    def set_vertices(self, vertices):
         self.vertices = vertices
 
-    def setResource(self, resource):
+    def set_resource(self, resource):
         self.resource = resource
 
-    def setNumber(self, number):
+    def set_number(self, number):
         self.number = number
 
-    def getCartesianCoords(self):
+    def get_cartesian_coords(self):
         center_x = sqrt(3) * (self.q + self.r/2)
         center_y = 3/2 * self.r
         return (center_x, center_y)
