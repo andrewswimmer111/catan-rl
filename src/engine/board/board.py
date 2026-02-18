@@ -2,7 +2,7 @@ from engine.board.tile import Tile, TileCollection
 from engine.board.vertex import Vertex, VertexCollection
 from engine.board.edge import Edge, EdgeCollection
 
-from utility.helpers import elementwise_add_tuples
+from utility.helpers import elementwise_add_tuples, quantize_point
 
 from math import sqrt
 
@@ -53,7 +53,8 @@ class Board:
 
         for tile in self.tiles:
             for i, offset in enumerate(offsets):
-                vertex_coord = elementwise_add_tuples(tile.get_cartesian_coords(), corner_offset[offset])
+                raw_coord = elementwise_add_tuples(tile.get_cartesian_coords(), corner_offset[offset])
+                vertex_coord = quantize_point(raw_coord)
                 vertex_id = (tile.get_axial_coords() + (i,))    # Example id for tile (0, 0) wilth offset S: (0, 0, 3)
 
                 if vertex_coord in created_vertices:
