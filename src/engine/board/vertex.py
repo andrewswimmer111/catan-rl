@@ -5,7 +5,7 @@ class Vertex:
     Attributes:
         x (int): The x-coordinate
         y (int): The y-coordinate
-        ids (List<Tuple<Int>>): A set of ids, where an ID is a tile + offset
+        ids (List<Tuple<Int>>): A list of ids, where an ID is a tile + offset
     """
     def __init__(self, x, y):
         self.x = x
@@ -13,7 +13,7 @@ class Vertex:
         self.ids = []
 
     def add_id(self, id):
-        self.ids.add(id)
+        self.ids.append(id)
 
     def get_first_id(self):
         return self.ids[0]

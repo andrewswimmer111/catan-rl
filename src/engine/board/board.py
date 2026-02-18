@@ -1,6 +1,7 @@
-from tile import Tile, TileCollection
-from vertex import Vertex, VertexCollection
-from edge import Edge, EdgeCollection
+from engine.board.tile import Tile, TileCollection
+from engine.board.vertex import Vertex, VertexCollection
+from engine.board.edge import Edge, EdgeCollection
+
 from math import sqrt
 
 class Board:
@@ -49,8 +50,8 @@ class Board:
         offsets = ["N", "NE", "SE", "S", "SW", "NW"]
 
         for tile in self.tiles:
-            for i in offsets:
-                vertex_coord = tile.getCartesianCoords() + corner_offset[i]
+            for i, offset in enumerate(offsets):
+                vertex_coord = tile.get_cartesian_coords() + corner_offset[offset]
                 vertex_id = (tile.get_axial_coords() + (i,))    # Example id for tile (0, 0) wilth offset S: (0, 0, 3)x
 
                 if vertex_coord in created_vertices:
@@ -74,7 +75,7 @@ class Board:
                 self.edges.append(Edge(vertex, tile.vertices[5]))
                 
                 if r >= -1:
-                    tile_above = TileCollection.get_by_axial_coords(q, r - 1)
+                    tile_above = self.tiles.get_by_axial_coords(q, r - 1)
 
                     if tile_above is not None:
                         self.edges.append(Edge(vertex, tile_above.vertices[1]))
@@ -91,6 +92,6 @@ class Board:
                 self.edges.append(Edge(vertex, tile.vertices[4]))
 
                 if r <= 1:
-                    tile_below = TileCollection.get_by_axial_coords(q, r + 1)
+                    tile_below = self.tiles.get_by_axial_coords(q, r + 1)
                     if tile_below is not None:
                         self.edges.append(Edge(vertex, tile_below.vertices[4]))

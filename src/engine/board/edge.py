@@ -1,4 +1,4 @@
-from vertex import Vertex
+from engine.board.vertex import Vertex
 
 class Edge:
     """
