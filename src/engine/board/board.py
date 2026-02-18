@@ -69,32 +69,30 @@ class Board:
 
 
     def create_edges(self):
+        """
+        Create all unique edges on the board.
+
+        For each hex tile we consider the 6 edges between consecutive vertices:
+        (0,1), (1,2), (2,3), (3,4), (4,5), (5,0)
+
+        We deduplicate using the vertex object's id() (or you can use
+        a unique vertex attribute if available) so a shared edge between two
+        neighboring tiles is only created once.
+        """
+
+        seen = set()  # holds tuples (min_id, max_id) for created edges
+
         for tile in self.tiles:
-            q, r = tile.get_axial_coords()
-            if r <= 0:
-                vertex = tile.vertices[0]
+            verts = tile.vertices
 
-                self.edges.append(Edge(vertex, tile.vertices[1]))
-                self.edges.append(Edge(vertex, tile.vertices[5]))
-                
-                if r >= -1:
-                    tile_above = self.tiles.get_by_axial_coords(q, r - 1)
+            for i in range(6):
+                v1 = verts[i]
+                v2 = verts[(i + 1) % 6]
 
-                    if tile_above is not None:
-                        self.edges.append(Edge(vertex, tile_above.vertices[1]))
+                key = frozenset((v1, v2))   # works because sets are unordered
 
-            if r == 0 and q % 2 == 0:
+                if key in seen:
+                    continue
 
-                self.edges.append(Edge(tile.vertices[1], tile.vertices[2]))
-                self.edges.append(Edge(tile.vertices[5], tile.vertices[4]))
-
-            if r >= 0:
-                vertex = tile.vertices[3]
-
-                self.edges.append(Edge(vertex, tile.vertices[2]))
-                self.edges.append(Edge(vertex, tile.vertices[4]))
-
-                if r <= 1:
-                    tile_below = self.tiles.get_by_axial_coords(q, r + 1)
-                    if tile_below is not None:
-                        self.edges.append(Edge(vertex, tile_below.vertices[4]))
+                seen.add(key)
+                self.edges.append(Edge(v1, v2))
