@@ -1,10 +1,10 @@
-from engine.board.tile import Tile, TileCollection
-from engine.board.vertex import Vertex, VertexCollection
-from engine.board.edge import Edge, EdgeCollection
+from engine.board.collections import VertexCollection, EdgeCollection, TileCollection
+from engine.board.components import Vertex, Edge, Tile
 
 from utility.helpers import elementwise_add_tuples, quantize_point
 
 from math import sqrt
+
 
 class Board:
     """
@@ -21,8 +21,6 @@ class Board:
         self.create_vertices()
         self.create_edges()
 
-
-
     # ---- Helpers Below -----
 
     def create_tiles(self, R=2):
@@ -31,7 +29,6 @@ class Board:
             r_max = min(R, -q + R)
             for r in range(r_min, r_max + 1):
                 self.tiles.append(Tile(q, r))
-    
 
     def create_vertices(self):
 
@@ -43,8 +40,8 @@ class Board:
 
         corner_offset = {
             "N":  (0,  1),
-            "NE": ( SQRT3_OVER_2,  HALF),
-            "SE": ( SQRT3_OVER_2, -HALF),
+            "NE": (SQRT3_OVER_2,  HALF),
+            "SE": (SQRT3_OVER_2, -HALF),
             "S":  (0, -1),
             "SW": (-SQRT3_OVER_2, -HALF),
             "NW": (-SQRT3_OVER_2,  HALF),
@@ -53,9 +50,11 @@ class Board:
 
         for tile in self.tiles:
             for i, offset in enumerate(offsets):
-                raw_coord = elementwise_add_tuples(tile.get_cartesian_coords(), corner_offset[offset])
+                raw_coord = elementwise_add_tuples(
+                    tile.get_cartesian_coords(), corner_offset[offset])
                 vertex_coord = quantize_point(raw_coord)
-                vertex_id = (tile.get_axial_coords() + (i,))    # Example id for tile (0, 0) wilth offset S: (0, 0, 3)
+                # Example id for tile (0, 0) wilth offset S: (0, 0, 3)
+                vertex_id = (tile.get_axial_coords() + (i,))
 
                 if vertex_coord in created_vertices:
                     vertex = created_vertices[vertex_coord]
@@ -66,7 +65,6 @@ class Board:
 
                 tile.assign_vertex(vertex, i)
                 vertex.add_id(vertex_id)
-
 
     def create_edges(self):
         """
