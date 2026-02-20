@@ -32,6 +32,8 @@ class Board:
 
     def create_vertices(self):
 
+        self.check_tiles_created()
+
         # Holds vertex coodinates -> vertex object
         created_vertices: dict[tuple[int, int], Vertex] = {}
 
@@ -78,6 +80,9 @@ class Board:
         neighboring tiles is only created once.
         """
 
+        self.check_tiles_created()
+        self.check_vertices_created()
+
         seen = set()  # holds tuples (min_id, max_id) for created edges
 
         for tile in self.tiles:
@@ -94,3 +99,12 @@ class Board:
 
                 seen.add(key)
                 self.edges.append(Edge(v1, v2))
+
+
+    def check_tiles_created(self):
+        if len(self.tiles) == 0:
+            raise ValueError("Tiles must be created.")
+
+    def check_vertices_created(self):
+        if len(self.vertices) == 0:
+            raise ValueError("Vertices must be created.")

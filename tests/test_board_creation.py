@@ -83,3 +83,16 @@ def test_edges_connect_board_vertices_and_no_duplicates(regular_board):
         key = frozenset((v1, v2))
         assert key not in seen_keys, "Duplicate edge detected"
         seen_keys.add(key)
+
+
+def test_creating_edges_before_tiles_raises():
+    b = Board()
+    with pytest.raises(ValueError, match="Tiles"):
+        b.create_edges()
+
+
+def test_creating_edges_before_vertices_raises():
+    b = Board()
+    b.create_tiles()
+    with pytest.raises(ValueError, match="Vertices"):
+        b.create_edges()
