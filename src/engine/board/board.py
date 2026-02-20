@@ -23,8 +23,9 @@ class Board:
         self.create_vertices()
         self.create_edges()
 
-    def setup_board(self):
-        pass
+    def setup_regular_board(self):
+        self.assign_tile_resources()
+        self.assign_tile_probabilities()
 
     # -------- Helpers Below ---------
 
@@ -48,6 +49,7 @@ class Board:
 
     def assign_tile_probabilities(self):
         self.check_tiles_created()
+        self.check_tiles_have_resources()
 
         tile_map = {
             tile.get_axial_coords(): tile for tile in self.tiles
@@ -60,8 +62,8 @@ class Board:
             if tile is None:
                 raise Warning("Spiral coord contained tile that does not exist")
             
-            if tile.resouce is not None:
-                tile.set_probability(PROBABILITIES[prob_index])
+            if tile.resource is not None:
+                tile.set_number(PROBABILITIES[prob_index])
                 prob_index += 1
 
 
@@ -164,6 +166,14 @@ class Board:
     def check_vertices_created(self):
         if len(self.vertices) == 0:
             raise ValueError("Vertices must be created.")
+        
+    def check_tiles_have_resources(self):
+        none_counter = 0
+        for tile in self.tiles:
+            if tile.resource is None:
+                none_counter += 1
+        if none_counter > 1:
+            raise ValueError("Tiles must be assigned resources")
         
 
 # ------- Constants ---------
