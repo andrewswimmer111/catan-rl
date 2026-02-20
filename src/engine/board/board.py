@@ -1,9 +1,11 @@
 from engine.board.collections import VertexCollection, EdgeCollection, TileCollection
 from engine.board.components import Vertex, Edge, Tile
+from engine.resources.resources import Resource
 
 from utility.helpers import elementwise_add_tuples, quantize_point
 
 from math import sqrt
+import random
 
 
 class Board:
@@ -21,7 +23,74 @@ class Board:
         self.create_vertices()
         self.create_edges()
 
-    # ---- Helpers Below -----
+    def setup_board(self):
+        pass
+
+    # -------- Helpers Below ---------
+
+    # -- Board setup
+
+    def assign_tile_resources(self):
+        self.check_tiles_created()
+
+        resources = (
+            [Resource.WOOD] * 4 +
+            [Resource.SHEEP] * 4 +
+            [Resource.WHEAT] * 4 +
+            [Resource.BRICK] * 3 +
+            [Resource.ORE] * 3 +
+            [None] * 1  # desert
+        )
+        random.shuffle(resources)
+        for tile, resource in zip(self.tiles, resources):
+            tile.set_resource(resource)
+
+
+    def assign_tile_probabilities(self):
+        self.check_tiles_created()
+
+        tile_map = {
+            tile.get_axial_coords(): tile for tile in self.tiles
+        }
+        spiral_coords = self._get_spiral_coords()
+        prob_index = 0
+        
+        for coord in spiral_coords:
+            tile = tile_map.get(coord)
+            if tile is None:
+                raise Warning("Spiral coord contained tile that does not exist")
+            
+            if tile.resouce is not None:
+                tile.set_probability(PROBABILITIES[prob_index])
+                prob_index += 1
+
+
+    def _hex_ring(self, center, radius):
+        if radius == 0:
+            return [center]
+
+        results = []
+
+        q = center[0] + HEX_DIRECTIONS[4][0] * radius
+        r = center[1] + HEX_DIRECTIONS[4][1] * radius
+
+        for direction in range(6):
+            dq, dr = HEX_DIRECTIONS[direction]
+            for _ in range(radius):
+                results.append((q, r))
+                q += dq
+                r += dr
+
+        return results
+    
+    def _get_spiral_coords(self):
+        coords = []
+        for radius in reversed(range(0, 3)):  # radius, radius-1, ..., 1, 0
+            coords.extend(self._hex_ring((0, 0), radius))
+        return coords
+
+
+    # -- Board creation --
 
     def create_tiles(self, R=2):
         for q in range(-R, R + 1):
@@ -37,23 +106,10 @@ class Board:
         # Holds vertex coodinates -> vertex object
         created_vertices: dict[tuple[int, int], Vertex] = {}
 
-        HALF = 1 / 2
-        SQRT3_OVER_2 = sqrt(3) / 2
-
-        corner_offset = {
-            "N":  (0,  1),
-            "NE": (SQRT3_OVER_2,  HALF),
-            "SE": (SQRT3_OVER_2, -HALF),
-            "S":  (0, -1),
-            "SW": (-SQRT3_OVER_2, -HALF),
-            "NW": (-SQRT3_OVER_2,  HALF),
-        }
-        offsets = ["N", "NE", "SE", "S", "SW", "NW"]
-
         for tile in self.tiles:
-            for i, offset in enumerate(offsets):
+            for i, offset in enumerate(OFFSETS):
                 raw_coord = elementwise_add_tuples(
-                    tile.get_cartesian_coords(), corner_offset[offset])
+                    tile.get_cartesian_coords(), CORNER_OFFSETS[offset])
                 vertex_coord = quantize_point(raw_coord)
                 # Example id for tile (0, 0) wilth offset S: (0, 0, 3)
                 vertex_id = (tile.get_axial_coords() + (i,))
@@ -108,3 +164,30 @@ class Board:
     def check_vertices_created(self):
         if len(self.vertices) == 0:
             raise ValueError("Vertices must be created.")
+        
+
+# ------- Constants ---------
+
+HEX_DIRECTIONS = [
+        (1, 0),
+        (1, -1),
+        (0, -1),
+        (-1, 0),
+        (-1, 1),
+        (0, 1),
+]
+
+HALF = 1 / 2
+SQRT3_OVER_2 = sqrt(3) / 2
+
+CORNER_OFFSETS = {
+    "N":  (0,  1),
+    "NE": (SQRT3_OVER_2,  HALF),
+    "SE": (SQRT3_OVER_2, -HALF),
+    "S":  (0, -1),
+    "SW": (-SQRT3_OVER_2, -HALF),
+    "NW": (-SQRT3_OVER_2,  HALF),
+}
+OFFSETS = ["N", "NE", "SE", "S", "SW", "NW"]
+
+PROBABILITIES = [5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11]
