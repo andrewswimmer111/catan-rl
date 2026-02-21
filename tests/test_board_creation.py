@@ -93,6 +93,11 @@ def test_vertices_have_between_one_and_three_tiles(regular_board):
         assert(len(vertex.tiles) > 0), "Vertices must belong to at least one tile"
         assert(len(vertex.tiles) <= 3), "Vertices must belong to at most three tiles"
 
+def test_vertices_have_between_two_and_three_edges(regular_board):
+    for vertex in regular_board.vertices:
+        assert(len(vertex.edges) >= 2), "Vertices must have at least 2 edges."
+        assert(len(vertex.edges) <= 3), "Vertices must have at most 3 edges."
+
 
 def test_creating_edges_before_tiles_raises():
     b = Board()

@@ -17,6 +17,7 @@ class Vertex:
         self.y = y
         self.ids = []
         self.tiles = []
+        self.edges = []
 
     def add_id(self, id):
         self.ids.append(id)
@@ -27,6 +28,9 @@ class Vertex:
     def add_tile(self, tile):
         self.tiles.append(tile)
 
+    def add_edge(self, edge):
+        self.edges.append(edge)
+        
 
 class Edge:
     """

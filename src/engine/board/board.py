@@ -157,7 +157,11 @@ class Board:
                     continue
 
                 seen.add(key)
-                self.edges.append(Edge(v1, v2))
+                edge = Edge(v1, v2)
+
+                self.edges.append(edge)
+                v1.add_edge(edge)
+                v2.add_edge(edge)
 
 
     def check_tiles_created(self):

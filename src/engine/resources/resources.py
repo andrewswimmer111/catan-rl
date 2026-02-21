@@ -33,3 +33,4 @@ class ResourceStack():
 class ResourceDistributer():
     # distributes the correct amount of resources
     # maybe identifies how many 
+    pass
