@@ -74,5 +74,19 @@ class TileCollection(Collection[Tile]):
 
 
 class EdgeCollection(Collection[Edge]):
-    """No new methods — only inherits Collection behaviour."""
-    pass
+
+    def _edge_key(self, v1, v2):
+        """Canonical, order-independent key for an undirected edge."""
+        return frozenset((v1, v2))
+
+    def exists_by_vertices(self, v1, v2) -> bool:
+        key = self._edge_key(v1, v2)
+        return self.exists(lambda e: self._edge_key(e.v1, e.v2) == key)
+
+    def find_by_vertices(self, v1, v2) -> Optional[Edge]:
+        key = self._edge_key(v1, v2)
+        return self.find(lambda e: self._edge_key(e.v1, e.v2) == key)
+
+    def get_by_vertices(self, v1, v2) -> Edge:
+        key = self._edge_key(v1, v2)
+        return self.get(lambda e: self._edge_key(e.v1, e.v2) == key)
