@@ -125,6 +125,7 @@ class Board:
 
                 tile.assign_vertex(vertex, i)
                 vertex.add_id(vertex_id)
+                vertex.add_tile(tile)
 
     def create_edges(self):
         """

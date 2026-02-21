@@ -16,12 +16,16 @@ class Vertex:
         self.x = x
         self.y = y
         self.ids = []
+        self.tiles = []
 
     def add_id(self, id):
         self.ids.append(id)
 
     def get_first_id(self):
         return self.ids[0]
+    
+    def add_tile(self, tile):
+        self.tiles.append(tile)
 
 
 class Edge:

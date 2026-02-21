@@ -85,6 +85,15 @@ def test_edges_connect_board_vertices_and_no_duplicates(regular_board):
         seen_keys.add(key)
 
 
+def test_vertices_have_between_one_and_three_tiles(regular_board):
+    """
+    Ensure every vertex on the board has between one and three tiles
+    """
+    for vertex in regular_board.vertices:
+        assert(len(vertex.tiles) > 0), "Vertices must belong to at least one tile"
+        assert(len(vertex.tiles) <= 3), "Vertices must belong to at most three tiles"
+
+
 def test_creating_edges_before_tiles_raises():
     b = Board()
     with pytest.raises(ValueError, match="Tiles"):
