@@ -177,8 +177,8 @@ class Board:
         for tile in self.tiles:
             if tile.resource is None:
                 none_counter += 1
-        if none_counter > 1:
-            raise ValueError("Tiles must be assigned resources")
+        if none_counter != 1:
+            raise ValueError("Tiles must have exactly one desert (None resource).")
         
 
 # ------- Constants ---------
