@@ -19,8 +19,8 @@ class Vertex:
         self.x = x
         self.y = y
         self.ids = []
-        self.tiles = [Tile]
-        self.edges = [Edge]
+        self.tiles: list[Tile] = []
+        self.edges: list[Edge]= []
         self.building: Building = None
 
     def add_id(self, id):
