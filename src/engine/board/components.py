@@ -1,4 +1,7 @@
 from engine.resources.resources import Resource
+from engine.board.bulidables import Road, Building
+
+
 from math import sqrt
 
 
@@ -16,8 +19,9 @@ class Vertex:
         self.x = x
         self.y = y
         self.ids = []
-        self.tiles = []
-        self.edges = []
+        self.tiles = [Tile]
+        self.edges = [Edge]
+        self.building: Building = None
 
     def add_id(self, id):
         self.ids.append(id)
@@ -30,7 +34,16 @@ class Vertex:
 
     def add_edge(self, edge):
         self.edges.append(edge)
-        
+
+    def has_building(self):
+        return self.building is not None
+    
+    def get_building_player(self):
+        if self.has_building:
+            return self.building.player
+        else:
+            return None
+
 
 class Edge:
     """
@@ -40,6 +53,29 @@ class Edge:
     def __init__(self, v1, v2):
         self.v1 = v1
         self.v2 = v2
+        self.road: Road = None
+    
+    def place_road(self, road: Road):
+        self.road = Road
+
+    def has_road(self):
+        return self.road is not None
+    
+    def get_road_player(self):
+        if self.has_road:
+            return self.road.player
+        else:
+            return None
+    
+    def get_other_vertex(self, v) -> Vertex:
+        if self.v1 == v:
+            return self.v2
+        if self.v2 == v:
+            return self.v1
+        raise ValueError("Specified vertex does not belong to the queried edge")
+    
+    def get_vertices(self) -> list[Vertex]:
+        return [self.v1, self.v2]
 
 
 class Tile:
