@@ -1,4 +1,5 @@
 from enum import Enum
+from collections import Counter
 
 class Resource(Enum):
     WOOD = "wood"
@@ -8,29 +9,28 @@ class Resource(Enum):
     ORE = "ore"
 
 
-class ResourceStack():
+class ResourcePool:
+    def __init__(self, initial=None):
+        self.counts = Counter(initial or {})  # Resource -> int
 
-    def __init__(self, resource: Resource, number: int):
-        self.resource = resource
-        self.number = number
+    def can_withdraw(self, resource: Resource, amount: int) -> bool:
+        return self.counts[resource] >= amount
 
-    def check_withdrawal_amount(self, amount):
-        if self.number >= amount:
-            return True
-        return False
-    
-    def withdraw(self, amount):
-        if self.check_withdrawal_amount():
-            self.number -= amount
-            # assign amount
-        else:
-            print("Invalid amount of resources left")
+    def withdraw(self, resource: Resource, amount: int) -> None:
+        if amount < 0:
+            raise ValueError("amount must be non-negative")
+        if not self.can_withdraw(resource, amount):
+            raise ValueError("not enough resources")
+        self.counts[resource] -= amount
 
-    def add(self, amount):
-        self.number += amount
+    def add(self, resource: Resource, amount: int) -> None:
+        if amount < 0:
+            raise ValueError("amount must be non-negative")
+        self.counts[resource] += amount
 
 
-class ResourceDistributer():
-    # distributes the correct amount of resources
-    # maybe identifies how many 
+class Bank(ResourcePool):
+    pass
+
+class ResourceHand(ResourcePool):
     pass
