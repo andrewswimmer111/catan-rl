@@ -21,12 +21,3 @@ def quantize_point(point, ndigits=3):
     to ensure stable float comparisons.
     """
     return (round(point[0], ndigits), round(point[1], ndigits))
-
-
-def roll_dice():
-    """
-    Rolls 2 dice and adds their values.
-    """
-    r1 = random.randint(1, 6)
-    r2 = random.randint(1, 6)
-    return r1 + r2
