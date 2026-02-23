@@ -1,4 +1,8 @@
 class Building:
+
+    vp = 0
+    collection_amount = 0
+    
     def __init__(self, player, vertex):
         self.player = player
         self.vertex = vertex

@@ -27,6 +27,13 @@ class Board:
         self.assign_tile_resources()
         self.assign_tile_probabilities()
 
+    def get_tiles_with_number(self, number: int) -> list[Tile]:
+        res = []
+        for tile in self.tiles:
+            if tile.number == number:
+                res.append(tile)
+        return res
+
     # -------- Helpers Below ---------
 
     # -- Board setup
