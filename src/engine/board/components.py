@@ -1,5 +1,5 @@
 from engine.resources.resources import Resource
-from engine.board.buildables import Road, Building
+from engine.board.buildables import Road, Building, Settlement
 
 
 from math import sqrt
@@ -49,6 +49,8 @@ class Vertex:
     def set_building(self, building: Building):
         self.building = building
 
+    def has_settlement(self):
+        return isinstance(self.building, Settlement)
 
 class Edge:
     """

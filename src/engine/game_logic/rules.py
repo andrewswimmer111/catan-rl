@@ -1,14 +1,14 @@
 from engine.board.board import Board
 from engine.board.components import Vertex, Edge
 
-def can_place_building(board, vertex: Vertex, player):
+def can_place_settlement(board, vertex: Vertex, player):
     """
-    Validates that a building can be placed on the vertex
+    Validates that a settlement can be placed on the vertex
 
-    Rules to placing a building on a vertex:
+    Rules to placing a settlement on a vertex:
     - Vertex must exist
     - Vertex must be unoccupied
-    - Vertex must be at least 2 edges away from any other building
+    - Vertex must be at least 2 edges away from any other settlement
     - Vertex must be connected to by a road owned by the same player
     """
     
@@ -50,6 +50,23 @@ def can_place_road(board, edge: Edge, player):
     
     if not building_connection and not road_connection:
         return False
+    
+    return True
+
+def can_upgrade_settlement(board, vertex: Vertex, player):
+    """
+    Validates that the settlement placed on the vertex can be upgraded to a city
+
+    Criteria: 
+    - Vertex must exist
+    - Vertex must have a settlement on it owned by the player
+    """
+
+    if not _check_vertex_exists(board, vertex):
+        raise ValueError("The referenced vertex does not exist on the board.")
+    
+    if not vertex.has_settlement() or not vertex.get_building_player() == player:
+        return False 
     
     return True
         
