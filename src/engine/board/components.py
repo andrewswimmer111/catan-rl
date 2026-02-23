@@ -1,5 +1,5 @@
 from engine.resources.resources import Resource
-from engine.board.bulidables import Road, Building
+from engine.board.buildables import Road, Building
 
 
 from math import sqrt
@@ -27,7 +27,9 @@ class Vertex:
         self.ids.append(id)
 
     def get_first_id(self):
-        return self.ids[0]
+        if len(self.ids) > 0:
+            return self.ids[0] 
+        return None
     
     def add_tile(self, tile):
         self.tiles.append(tile)
@@ -43,6 +45,9 @@ class Vertex:
             return self.building.player
         else:
             return None
+    
+    def set_building(self, building: Building):
+        self.building = building
 
 
 class Edge:
@@ -76,6 +81,9 @@ class Edge:
     
     def get_vertices(self) -> list[Vertex]:
         return [self.v1, self.v2]
+    
+    def set_road(self, road: Road):
+        self.road = road
 
 
 class Tile:
